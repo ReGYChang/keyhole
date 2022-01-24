@@ -75,6 +75,7 @@ func Run(fullVersion string) {
 	webserver := flag.Bool("web", false, "enable web server")
 	wt := flag.Bool("wt", false, "visualize wiredTiger cache usage")
 	yes := flag.Bool("yes", false, "bypass confirmation")
+	logstash := flag.String("logstash", "", "print mongodb status to logstash")
 
 	flag.Parse()
 	flagset := make(map[string]bool)
@@ -96,6 +97,8 @@ func Run(fullVersion string) {
 		uri = *index
 	} else if len(flag.Args()) > 0 {
 		uri = flag.Arg(0)
+	} else if *logstash != "" {
+		uri = *logstash
 	}
 	if *maobiURL == "" && os.Getenv("MAOBI") != "" {
 		*maobiURL = os.Getenv("MAOBI")
@@ -291,6 +294,25 @@ func Run(fullVersion string) {
 		if err = f.SeedData(client); err != nil {
 			log.Fatal(err)
 		}
+		return
+	}
+
+	// print mongodb status to json for logstash
+	if *logstash != "" {
+		var data []byte
+		stats := mdb.NewClusterStats(fullVersion)
+		stats.SetDBNames(dbNames)
+		stats.SetRedaction(*redaction)
+		stats.SetVerbose(true)
+		if err = stats.GetClusterStats(client, connString); err != nil {
+			log.Fatalf("a valid user with roles 'clusterMonitor' and 'readAnyDatabase' on all mongo processes are required.\n%v", err)
+		}
+		stats.Print()
+
+		if data, err = json.Marshal(stats); err != nil {
+			return
+		}
+		fmt.Println(string(data))
 		return
 	}
 

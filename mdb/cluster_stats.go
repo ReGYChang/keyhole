@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/simagix/keyhole/linux"
 	"net/url"
 	"os"
 	"strings"
@@ -43,6 +44,7 @@ type ClusterStats struct {
 	ServerStatus     ServerStatus     `bson:"serverStatus"`
 	Shards           []Shard          `bson:"shards"`
 	Version          string           `bson:"version"`
+	SysInfo          linux.SysInfo    `bson:"sysInfo"           json:"sysInfo"`
 
 	dbNames   []string
 	fastMode  bool
@@ -82,6 +84,9 @@ func (p *ClusterStats) GetClusterStats(client *mongo.Client, connString connstri
 	var err error
 	p.Logger = gox.GetLogger(p.signature)
 	p.Logger.Info("GetClusterStats() begins")
+	if p.SysInfo, err = linux.GetSysInfo(); err != nil {
+		return err
+	}
 	if err = p.GetClusterStatsSummary(client); err != nil {
 		return err
 	}
