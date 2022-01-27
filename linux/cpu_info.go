@@ -5,8 +5,8 @@ import (
 )
 
 type CPUStats struct {
-	CPUInfo  *cpu.InfoStat  `json:"process_info"`
-	CPUTimes *cpu.TimesStat `json:"cpu_times"`
+	CPUInfo  *cpu.InfoStat  `json:"processInfo"`
+	CPUTimes *cpu.TimesStat `json:"cpuTimes"`
 }
 
 func GetCPUStats() CPUStats {
