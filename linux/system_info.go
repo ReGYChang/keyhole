@@ -7,13 +7,13 @@ import (
 )
 
 type SysInfo struct {
-	ProcessInfo    types.ProcessInfo     `json:"process_info"`
-	CPUTimes       types.CPUTimes        `json:"cpu_times"`
-	MemoryInfo     types.MemoryInfo      `json:"memory_info"`
-	UserInfo       types.UserInfo        `json:"user_info"`
-	HostInfo       types.HostInfo        `json:"host_info"`
-	HostMemoryInfo *types.HostMemoryInfo `json:"host_memory_info"`
-	VmStatInfo     *types.VMStatInfo     `json:"vm_stat_info"`
+	ProcessInfo    types.ProcessInfo     `json:"processInfo"`
+	CPUTimes       types.CPUTimes        `json:"cpuTimes"`
+	MemoryInfo     types.MemoryInfo      `json:"memoryInfo"`
+	UserInfo       types.UserInfo        `json:"userInfo"`
+	HostInfo       types.HostInfo        `json:"hostInfo"`
+	HostMemoryInfo *types.HostMemoryInfo `json:"hostMemoryInfo"`
+	VmStatInfo     *types.VMStatInfo     `json:"vmStatInfo"`
 }
 
 // GetVMStat gets linux vmstat metrics
