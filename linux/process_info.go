@@ -10,6 +10,8 @@ type MongoProcessStats struct {
 	MemoryInfoStat *process.MemoryInfoStat `json:"memoryInfoStat"`
 	IOCountersStat *process.IOCountersStat `json:"ioCountersStat"`
 	PageFaultsStat *process.PageFaultsStat `json:"pageFaultsStat"`
+	CPUPercent     float64                 `json:"cpuPercent"`
+	MemoryPercent  float32                 `json:"memoryPercent"`
 }
 
 func GetMongoProcessInfo() (*MongoProcessStats, error) {
@@ -27,6 +29,12 @@ func GetMongoProcessInfo() (*MongoProcessStats, error) {
 		return &mongoProcessStats, err
 	}
 	if mongoProcessStats.PageFaultsStat, err = GetPageFaultsStats(p); err != nil {
+		return &mongoProcessStats, err
+	}
+	if mongoProcessStats.CPUPercent, err = GetCPUPercent(p); err != nil {
+		return &mongoProcessStats, err
+	}
+	if mongoProcessStats.MemoryPercent, err = GetMemoryPercent(p); err != nil {
 		return &mongoProcessStats, err
 	}
 	return &mongoProcessStats, nil
