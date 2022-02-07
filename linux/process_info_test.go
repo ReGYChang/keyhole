@@ -13,7 +13,7 @@ func TestProcessInfo(t *testing.T) {
 	}
 
 	data, _ := json.MarshalIndent(processInfos, "", " ")
-	fmt.Print(string(data))
+	fmt.Println(string(data))
 }
 
 func TestProcessCpuUsage(t *testing.T) {
@@ -23,7 +23,7 @@ func TestProcessCpuUsage(t *testing.T) {
 	}
 
 	info, err := GetCPUPercent(p)
-	fmt.Sprintf("CPU Usage:%v\n", info)
+	fmt.Sprintf("CPU Usage:%f\n", info)
 }
 
 func TestProcessMemoryUsage(t *testing.T) {
@@ -33,5 +33,5 @@ func TestProcessMemoryUsage(t *testing.T) {
 	}
 
 	info, err := GetMemoryPercent(p)
-	fmt.Sprintf("Memory Usage:%v\n", info)
+	fmt.Sprintf("Memory Usage:%f\n", info)
 }
