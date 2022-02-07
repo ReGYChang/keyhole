@@ -15,21 +15,21 @@ type MongoProcessStats struct {
 func GetMongoProcessInfo() (*MongoProcessStats, error) {
 	var p *process.Process
 	var err error
-	var mongoProcessStats *MongoProcessStats
+	var mongoProcessStats MongoProcessStats
 
 	if p, err = GetMongoProcess(); err != nil {
-		return mongoProcessStats, err
+		return &mongoProcessStats, err
 	}
 	if mongoProcessStats.MemoryInfoStat, err = GetMemoryInfoStat(p); err != nil {
-		return mongoProcessStats, err
+		return &mongoProcessStats, err
 	}
 	if mongoProcessStats.IOCountersStat, err = GetIOCounterStat(p); err != nil {
-		return mongoProcessStats, err
+		return &mongoProcessStats, err
 	}
 	if mongoProcessStats.IOCountersStat, err = GetIOCounterStat(p); err != nil {
-		return mongoProcessStats, err
+		return &mongoProcessStats, err
 	}
-	return mongoProcessStats, nil
+	return &mongoProcessStats, nil
 }
 
 func GetMongoProcess() (*process.Process, error) {
