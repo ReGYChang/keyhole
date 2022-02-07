@@ -77,7 +77,7 @@ func GetNetworkCounters() (*types.NetworkCountersInfo, error) {
 
 func GetSysInfo() (SysInfo, error) {
 	var sysInfo SysInfo
-	var host types.Host
+	//var host types.Host
 	var err error
 
 	if sysInfo.CPUStats, err = GetCPUStats(); err != nil {
@@ -95,9 +95,9 @@ func GetSysInfo() (SysInfo, error) {
 	if sysInfo.HostInfo, err = GetHostInfo(); err != nil {
 		return sysInfo, err
 	}
-	if sysInfo.HostMemoryInfo, err = host.Memory(); err != nil {
-		return sysInfo, err
-	}
+	//if sysInfo.HostMemoryInfo, err = host.Memory(); err != nil {
+	//	return sysInfo, err
+	//}
 	if sysInfo.VmStatInfo, err = GetVMStat(); err != nil {
 		return sysInfo, err
 	}
