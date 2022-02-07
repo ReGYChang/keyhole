@@ -7,13 +7,14 @@ import (
 )
 
 type SysInfo struct {
-	ProcessInfo    types.ProcessInfo     `json:"processInfo"`
-	CPUTimes       types.CPUTimes        `json:"cpuTimes"`
-	MemoryInfo     types.MemoryInfo      `json:"memoryInfo"`
-	UserInfo       types.UserInfo        `json:"userInfo"`
-	HostInfo       types.HostInfo        `json:"hostInfo"`
-	HostMemoryInfo *types.HostMemoryInfo `json:"hostMemoryInfo"`
-	VmStatInfo     *types.VMStatInfo     `json:"vmStatInfo"`
+	MongoProcessStats *MongoProcessStats    `json:"processInfo"`
+	CPUStats          *CPUStats             `json:"CPUStats"`
+	MemoryStats       *MemoryStats          `json:"memoryStats"`
+	DiskStats         *DiskStats            `json:"diskStats"`
+	HostInfo          *HostInfo             `json:"hostInfo"`
+	HostMemoryInfo    *types.HostMemoryInfo `json:"hostMemoryInfo"`
+	VmStatInfo        *types.VMStatInfo     `json:"vmStatInfo"`
+	NetworkStats      *NetInfo              `json:"networkStats"`
 }
 
 // GetVMStat gets linux vmstat metrics
@@ -76,35 +77,31 @@ func GetNetworkCounters() (*types.NetworkCountersInfo, error) {
 
 func GetSysInfo() (SysInfo, error) {
 	var sysInfo SysInfo
-	var process types.Process
 	var host types.Host
 	var err error
-	if process, err = sysinfo.Self(); err != nil {
-		return sysInfo, err
-	}
 
-	if sysInfo.ProcessInfo, err = process.Info(); err != nil {
+	if sysInfo.CPUStats, err = GetCPUStats(); err != nil {
 		return sysInfo, err
 	}
-	if sysInfo.CPUTimes, err = process.CPUTime(); err != nil {
+	if sysInfo.MemoryStats, err = GetMemoryStats(); err != nil {
 		return sysInfo, err
 	}
-	if sysInfo.MemoryInfo, err = process.Memory(); err != nil {
+	if sysInfo.DiskStats, err = GetDiskInfo(); err != nil {
 		return sysInfo, err
 	}
-	if sysInfo.UserInfo, err = process.User(); err != nil {
+	if sysInfo.MongoProcessStats, err = GetMongoProcessInfo(); err != nil {
 		return sysInfo, err
 	}
-
-	if host, err = sysinfo.Host(); err != nil {
+	if sysInfo.HostInfo, err = GetHostInfo(); err != nil {
 		return sysInfo, err
 	}
-	sysInfo.HostInfo = host.Info()
 	if sysInfo.HostMemoryInfo, err = host.Memory(); err != nil {
 		return sysInfo, err
 	}
-
 	if sysInfo.VmStatInfo, err = GetVMStat(); err != nil {
+		return sysInfo, err
+	}
+	if sysInfo.NetworkStats, err = GetNetInfo(); err != nil {
 		return sysInfo, err
 	}
 

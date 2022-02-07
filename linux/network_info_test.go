@@ -7,7 +7,11 @@ import (
 )
 
 func TestNetInfo(t *testing.T) {
-	netInfos := GetNetInfo()
+	var err error
+	var netInfos *NetInfo
+	if netInfos, err = GetNetInfo(); err != nil {
+		t.Fatal(err)
+	}
 
 	data, _ := json.MarshalIndent(netInfos, "", " ")
 	fmt.Print(string(data))

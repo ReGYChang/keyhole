@@ -4,34 +4,38 @@ import (
 	"github.com/shirou/gopsutil/v3/disk"
 )
 
-type DiskInfo struct {
+type DiskStats struct {
 	UsageStat      *disk.UsageStat                 `json:"usageStat"`
 	PartitionStat  *[]disk.PartitionStat           `json:"partitionStat"`
 	IOCountersStat *map[string]disk.IOCountersStat `json:"ioCountersStat"`
 }
 
-func GetDiskInfo() DiskInfo {
-	usageStat := GetUsageStat()
-	partitionStat := GetPartitionStat()
-	ioCountersStat := GetDiskIOCountersStat()
-	return DiskInfo{
-		UsageStat:      usageStat,
-		PartitionStat:  partitionStat,
-		IOCountersStat: ioCountersStat,
+func GetDiskInfo() (*DiskStats, error) {
+	var diskStats DiskStats
+	var err error
+	if diskStats.UsageStat, err = GetUsageStat(); err != nil {
+		return &diskStats, err
 	}
+	if diskStats.PartitionStat, err = GetPartitionStat(); err != nil {
+		return &diskStats, err
+	}
+	if diskStats.IOCountersStat, err = GetDiskIOCountersStat(); err != nil {
+		return &diskStats, err
+	}
+	return &diskStats, err
 }
 
-func GetUsageStat() *disk.UsageStat {
-	usageStat, _ := disk.Usage("/")
-	return usageStat
+func GetUsageStat() (*disk.UsageStat, error) {
+	usageStat, err := disk.Usage("/")
+	return usageStat, err
 }
 
-func GetPartitionStat() *[]disk.PartitionStat {
-	partitionStat, _ := disk.Partitions(true)
-	return &partitionStat
+func GetPartitionStat() (*[]disk.PartitionStat, error) {
+	partitionStat, err := disk.Partitions(true)
+	return &partitionStat, err
 }
 
-func GetDiskIOCountersStat() *map[string]disk.IOCountersStat {
-	ioCountersStat, _ := disk.IOCounters()
-	return &ioCountersStat
+func GetDiskIOCountersStat() (*map[string]disk.IOCountersStat, error) {
+	ioCountersStat, err := disk.IOCounters()
+	return &ioCountersStat, err
 }

@@ -7,7 +7,12 @@ import (
 )
 
 func TestDiskInfo(t *testing.T) {
-	diskInfo := GetDiskInfo()
+	var err error
+	var diskInfo *DiskStats
+
+	if diskInfo, err = GetDiskInfo(); err != nil {
+		t.Fatal(err)
+	}
 
 	data, _ := json.MarshalIndent(diskInfo, "", " ")
 	fmt.Print(string(data))

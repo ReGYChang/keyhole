@@ -10,26 +10,28 @@ type HostInfo struct {
 	//TemperatureStat *[]host.TemperatureStat `json:"hostTemperatureStat"`
 }
 
-func GetHostInfo() HostInfo {
-	infoStat := GetHostInfoStat()
-	userStat := GetHostUserStat()
+func GetHostInfo() (*HostInfo, error) {
+	var hostInfo HostInfo
+	var err error
+	if hostInfo.InfoStat, err = GetHostInfoStat(); err != nil {
+		return &hostInfo, err
+	}
+	if hostInfo.UserStat, err = GetHostUserStat(); err != nil {
+		return &hostInfo, err
+	}
 	//temperatureStat := GetHostTemperatureStat()
 
-	return HostInfo{
-		InfoStat: infoStat,
-		UserStat: userStat,
-		//TemperatureStat: temperatureStat,
-	}
+	return &hostInfo, err
 }
 
-func GetHostInfoStat() *host.InfoStat {
-	infos, _ := host.Info()
-	return infos
+func GetHostInfoStat() (*host.InfoStat, error) {
+	infos, err := host.Info()
+	return infos, err
 }
 
-func GetHostUserStat() *[]host.UserStat {
-	infos, _ := host.Users()
-	return &infos
+func GetHostUserStat() (*[]host.UserStat, error) {
+	infos, err := host.Users()
+	return &infos, err
 }
 
 //func GetHostTemperatureStat() *[]host.TemperatureStat {

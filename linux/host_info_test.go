@@ -7,7 +7,11 @@ import (
 )
 
 func TestHostInfo(t *testing.T) {
-	hostInfo := GetHostInfo()
+	var hostInfo *HostInfo
+	var err error
+	if hostInfo, err = GetHostInfo(); err != nil {
+		t.Fatal(err)
+	}
 
 	data, _ := json.MarshalIndent(hostInfo, "", " ")
 	fmt.Print(string(data))

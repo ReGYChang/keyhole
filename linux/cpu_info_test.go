@@ -7,7 +7,12 @@ import (
 )
 
 func TestCpuInfo(t *testing.T) {
-	cpuStats := GetCPUStats()
+	var cpuStats *CPUStats
+	var err error
+
+	if cpuStats, err = GetCPUStats(); err != nil {
+		t.Fatal(err)
+	}
 
 	data, _ := json.MarshalIndent(cpuStats, "", " ")
 	fmt.Print(string(data))

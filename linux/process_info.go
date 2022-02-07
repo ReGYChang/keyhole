@@ -4,7 +4,7 @@ import (
 	"github.com/shirou/gopsutil/v3/process"
 )
 
-type MongoProcessInfo struct {
+type MongoProcessStats struct {
 	//RlimitStat     *[]process.RlimitStat    `json:"rlimitStat"`
 	//OpenFileStat   *[]process.OpenFilesStat `json:"openFileStat"`
 	MemoryInfoStat *process.MemoryInfoStat `json:"memoryInfoStat"`
@@ -12,48 +12,57 @@ type MongoProcessInfo struct {
 	PageFaultsStat *process.PageFaultsStat `json:"pageFaultsStat"`
 }
 
-func GetMongoProcessInfo() MongoProcessInfo {
-	p := GetMongoProcess()
-	return MongoProcessInfo{
-		//RlimitStat:     GetRlimitStat(p),
-		//OpenFileStat:   GetOpenFileStat(p),
-		MemoryInfoStat: GetMemoryInfoStat(p),
-		IOCountersStat: GetIOCounterStat(p),
-		PageFaultsStat: GetPageFaultsStats(p),
+func GetMongoProcessInfo() (*MongoProcessStats, error) {
+	var p *process.Process
+	var err error
+	var mongoProcessStats *MongoProcessStats
+
+	if p, err = GetMongoProcess(); err != nil {
+		return mongoProcessStats, err
 	}
+	if mongoProcessStats.MemoryInfoStat, err = GetMemoryInfoStat(p); err != nil {
+		return mongoProcessStats, err
+	}
+	if mongoProcessStats.IOCountersStat, err = GetIOCounterStat(p); err != nil {
+		return mongoProcessStats, err
+	}
+	if mongoProcessStats.IOCountersStat, err = GetIOCounterStat(p); err != nil {
+		return mongoProcessStats, err
+	}
+	return mongoProcessStats, nil
 }
 
-func GetMongoProcess() *process.Process {
-	infos, _ := process.Processes()
+func GetMongoProcess() (*process.Process, error) {
+	infos, err := process.Processes()
 	for _, p := range infos {
 		if n, _ := p.Name(); n == "mongod" {
-			return p
+			return p, nil
 		}
 	}
-	return nil
+	return nil, err
 }
 
-func GetRlimitStat(p *process.Process) *[]process.RlimitStat {
-	infos, _ := p.Rlimit()
-	return &infos
+func GetRlimitStat(p *process.Process) (*[]process.RlimitStat, error) {
+	infos, err := p.Rlimit()
+	return &infos, err
 }
 
-func GetOpenFileStat(p *process.Process) *[]process.OpenFilesStat {
-	infos, _ := p.OpenFiles()
-	return &infos
+func GetOpenFileStat(p *process.Process) (*[]process.OpenFilesStat, error) {
+	infos, err := p.OpenFiles()
+	return &infos, err
 }
 
-func GetMemoryInfoStat(p *process.Process) *process.MemoryInfoStat {
-	infos, _ := p.MemoryInfo()
-	return infos
+func GetMemoryInfoStat(p *process.Process) (*process.MemoryInfoStat, error) {
+	infos, err := p.MemoryInfo()
+	return infos, err
 }
 
-func GetIOCounterStat(p *process.Process) *process.IOCountersStat {
-	infos, _ := p.IOCounters()
-	return infos
+func GetIOCounterStat(p *process.Process) (*process.IOCountersStat, error) {
+	infos, err := p.IOCounters()
+	return infos, err
 }
 
-func GetPageFaultsStats(p *process.Process) *process.PageFaultsStat {
-	infos, _ := p.PageFaults()
-	return infos
+func GetPageFaultsStats(p *process.Process) (*process.PageFaultsStat, error) {
+	infos, err := p.PageFaults()
+	return infos, err
 }

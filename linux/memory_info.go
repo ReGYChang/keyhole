@@ -9,22 +9,26 @@ type MemoryStats struct {
 	SwapMemoryStat    *mem.SwapMemoryStat    `json:"swapMemoryStat"`
 }
 
-func GetMemoryStats() MemoryStats {
-	virtualMemoryStat := GetVirtualMemoryStat()
-	swapMemoryStat := GetSwapMemoryStat()
+func GetMemoryStats() (*MemoryStats, error) {
+	var memoryStats MemoryStats
+	var err error
 
-	return MemoryStats{
-		VirtualMemoryStat: virtualMemoryStat,
-		SwapMemoryStat:    swapMemoryStat,
+	if memoryStats.VirtualMemoryStat, err = GetVirtualMemoryStat(); err != nil {
+		return &memoryStats, err
 	}
+	if memoryStats.SwapMemoryStat, err = GetSwapMemoryStat(); err != nil {
+		return &memoryStats, err
+	}
+
+	return &memoryStats, nil
 }
 
-func GetVirtualMemoryStat() *mem.VirtualMemoryStat {
-	infos, _ := mem.VirtualMemory()
-	return infos
+func GetVirtualMemoryStat() (*mem.VirtualMemoryStat, error) {
+	infos, err := mem.VirtualMemory()
+	return infos, err
 }
 
-func GetSwapMemoryStat() *mem.SwapMemoryStat {
-	infos, _ := mem.SwapMemory()
-	return infos
+func GetSwapMemoryStat() (*mem.SwapMemoryStat, error) {
+	infos, err := mem.SwapMemory()
+	return infos, err
 }

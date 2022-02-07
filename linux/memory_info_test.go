@@ -7,7 +7,11 @@ import (
 )
 
 func TestMemoryInfo(t *testing.T) {
-	memoryStats := GetMemoryStats()
+	var memoryStats *MemoryStats
+	var err error
+	if memoryStats, err = GetMemoryStats(); err != nil {
+		t.Fatal(err)
+	}
 
 	data, _ := json.MarshalIndent(memoryStats, "", " ")
 	fmt.Print(string(data))
