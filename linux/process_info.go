@@ -26,7 +26,7 @@ func GetMongoProcessInfo() (*MongoProcessStats, error) {
 	if mongoProcessStats.IOCountersStat, err = GetIOCounterStat(p); err != nil {
 		return &mongoProcessStats, err
 	}
-	if mongoProcessStats.IOCountersStat, err = GetIOCounterStat(p); err != nil {
+	if mongoProcessStats.PageFaultsStat, err = GetPageFaultsStats(p); err != nil {
 		return &mongoProcessStats, err
 	}
 	return &mongoProcessStats, nil
@@ -65,4 +65,14 @@ func GetIOCounterStat(p *process.Process) (*process.IOCountersStat, error) {
 func GetPageFaultsStats(p *process.Process) (*process.PageFaultsStat, error) {
 	infos, err := p.PageFaults()
 	return infos, err
+}
+
+func GetCPUPercent(p *process.Process) (float64, error) {
+	info, err := p.CPUPercent()
+	return info, err
+}
+
+func GetMemoryPercent(p *process.Process) (float32, error) {
+	info, err := p.MemoryPercent()
+	return info, err
 }
