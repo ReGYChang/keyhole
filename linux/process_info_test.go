@@ -23,7 +23,7 @@ func TestProcessCpuUsage(t *testing.T) {
 	}
 
 	info, err := GetCPUPercent(p)
-	fmt.Sprintf("CPU Usage:%f\n", info)
+	fmt.Println(info)
 }
 
 func TestProcessMemoryUsage(t *testing.T) {
@@ -33,5 +33,5 @@ func TestProcessMemoryUsage(t *testing.T) {
 	}
 
 	info, err := GetMemoryPercent(p)
-	fmt.Sprintf("Memory Usage:%f\n", info)
+	fmt.Println(info)
 }
